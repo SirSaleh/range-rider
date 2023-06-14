@@ -9,25 +9,33 @@ class SinRangeInput{
 	 * @param {Number} sinSVGHeight Height of the svg element
 	 */
 
-	constructor({holderID} = {}){
+	constructor({holderID, sinRepeatsCount=1} = {}){
 		/**
 		 * constructor of sinRangeInput
 		 * @argument {String} holderID the ID of HTML element holder of range selector
+		 * @argument {Number} sinRepeatsCount the number of sin (0-2pi) repeated (float 0-infinity) times
 		 * @returns {null}
 		 */
-		this.holderID = holderID;
 		this.segments = 1000;
+		this.sinRepeatsCount = sinRepeatsCount
+		this.holderElement = document.getElementById(holderID);
 
 		this.sinSVGWidth = 0
 		this.sinSVGHeight = 0
-	}
 
-	getInputHolderElement(){
-		return document.getElementById(this.holderID);
+		this.amplitudeMultiplier = this.getAmplitudeMultiplier()
 	}
 
 	getSinYAxis(offsetX){
-		return Math.sin(offsetX)+this.sinSVGHeight/2
+		return (this.amplitudeMultiplier * Math.sin(offsetX))+this.sinSVGHeight/2
+	}
+
+	getAmplitudeMultiplier(){
+		/**
+		 * get amplitude multiplier of the sinWave based on the holderSize
+		 */
+
+		return this.holderElement.clientHeight / 2
 	}
 
 	describeSinPath({percentage=100}={}){
@@ -47,11 +55,11 @@ class SinRangeInput{
 	}
 
 	generateSVG(){
-		let svgHolder = this.getInputHolderElement()
+		let svgHolder = this.holderElement
 		const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 		svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        svg.setAttribute('width', this.sinSVGWidth + "px");
-        svg.setAttribute('height', this.sinSVGHeight + "px");
+        svg.setAttribute('width', this.sinSVGWidth + 20 + "px");
+        svg.setAttribute('height', this.sinSVGHeight + 20 + "px");
 		const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 		const sinGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 		path.setAttribute('d', this.describeSinPath());
@@ -63,9 +71,8 @@ class SinRangeInput{
 	}
 
 	generate(){
-		let elem = this.getInputHolderElement();
-		this.sinSVGWidth = elem.clientWidth;
-		this.sinSVGHeight = elem.clientHeight;
+		this.sinSVGWidth = this.holderElement.clientWidth;
+		this.sinSVGHeight = this.holderElement.clientHeight;
 
 		this.generateSVG()
 	}
