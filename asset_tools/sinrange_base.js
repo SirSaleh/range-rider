@@ -38,16 +38,26 @@ class SinRangeInput{
 		return this.holderElement.clientHeight / 2
 	}
 
+	getRelativeSinOffset(step){
+		return step / this.segments * 2 * Math.PI * this.sinRepeatsCount
+	}
+
+	getScreenToCartesianRatio(step){
+		return this.sinSVGWidth / ( 2 * Math.PI * this.sinRepeatsCount)
+	}
+
 	describeSinPath({percentage=100}={}){
 		let path = []
 		let currentOffsetX = 0
 		let NextOffsetX = 0
+		let xAxisRatio = this.getScreenToCartesianRatio();
 		for (let i=0; i<this.segments; i++){
-			currentOffsetX = this.sinSVGWidth/this.segments*i;
-			NextOffsetX = this.sinSVGWidth/this.segments*(i+1);
+			// to do Sin Limited BUTTTT width is not streching
+			currentOffsetX = this.getRelativeSinOffset(i);
+			NextOffsetX = this.getRelativeSinOffset(i+1);
 			path.push(
-				'M', currentOffsetX, this.getSinYAxis(currentOffsetX),
-				'L', NextOffsetX, this.getSinYAxis(NextOffsetX)
+				'M', xAxisRatio * currentOffsetX, this.getSinYAxis(currentOffsetX),
+				'L', xAxisRatio * NextOffsetX, this.getSinYAxis(NextOffsetX)
 			)
 		}
 
@@ -57,13 +67,15 @@ class SinRangeInput{
 	generateSVG(){
 		let svgHolder = this.holderElement
 		const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+		const sinGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
 		svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
         svg.setAttribute('width', this.sinSVGWidth + 20 + "px");
         svg.setAttribute('height', this.sinSVGHeight + 20 + "px");
-		const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-		const sinGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 		path.setAttribute('d', this.describeSinPath());
 		path.style.stroke = "#000000"
+		path.style.strokeWidth = 1
 		sinGroup.appendChild(path)
 		svgHolder.appendChild(svg);
 
@@ -82,6 +94,7 @@ class SinRangeInput{
 window.onload = function() {
 	si = new SinRangeInput({
 		holderID:"sinus_input",
+		sinRepeatsCount: 1
 	});
 	si.generate()
 }
