@@ -20,22 +20,23 @@ class SinRangeInput{
 		this.sinRepeatsCount = sinRepeatsCount
 		this.holderElement = document.getElementById(holderID);
 
-		this.sinSVGWidth = 0
-		this.sinSVGHeight = 0
+		this.strokeWidth = 5
+		this.sinSVGWidth = this.holderElement.clientWidth;
+		this.sinSVGHeight = this.holderElement.clientHeight;
+
 
 		this.amplitudeMultiplier = this.getAmplitudeMultiplier()
 	}
 
 	getSinYAxis(offsetX){
-		return (this.amplitudeMultiplier * Math.sin(offsetX))+this.sinSVGHeight/2
+		return this.amplitudeMultiplier * Math.sin(offsetX) + this.sinSVGHeight /2
 	}
 
 	getAmplitudeMultiplier(){
 		/**
 		 * get amplitude multiplier of the sinWave based on the holderSize
 		 */
-
-		return this.holderElement.clientHeight / 2
+		return (this.sinSVGHeight - this.strokeWidth) / 2
 	}
 
 	getRelativeSinOffset(step){
@@ -52,7 +53,6 @@ class SinRangeInput{
 		let NextOffsetX = 0
 		let xAxisRatio = this.getScreenToCartesianRatio();
 		for (let i=0; i<this.segments; i++){
-			// to do Sin Limited BUTTTT width is not streching
 			currentOffsetX = this.getRelativeSinOffset(i);
 			NextOffsetX = this.getRelativeSinOffset(i+1);
 			path.push(
@@ -71,11 +71,11 @@ class SinRangeInput{
 		const sinGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
 		svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        svg.setAttribute('width', this.sinSVGWidth + 20 + "px");
-        svg.setAttribute('height', this.sinSVGHeight + 20 + "px");
+        svg.setAttribute('width', this.sinSVGWidth + "px");
+        svg.setAttribute('height', this.sinSVGHeight + "px");
 		path.setAttribute('d', this.describeSinPath());
 		path.style.stroke = "#000000"
-		path.style.strokeWidth = 1
+		path.style.strokeWidth = this.strokeWidth
 		sinGroup.appendChild(path)
 		svgHolder.appendChild(svg);
 
@@ -83,9 +83,6 @@ class SinRangeInput{
 	}
 
 	generate(){
-		this.sinSVGWidth = this.holderElement.clientWidth;
-		this.sinSVGHeight = this.holderElement.clientHeight;
-
 		this.generateSVG()
 	}
 }
