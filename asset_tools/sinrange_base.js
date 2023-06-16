@@ -77,9 +77,9 @@ class SinRangeInput{
 		path.style.stroke = "#000000"
 		path.style.strokeWidth = this.strokeWidth
 		sinGroup.appendChild(path)
-		svgHolder.appendChild(svg);
-
+		svgHolder.replaceChildren(svg);
 		svg.appendChild(sinGroup)
+
 	}
 
 	generate(){
