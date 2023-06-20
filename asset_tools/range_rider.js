@@ -7,17 +7,19 @@ class RangeRider{
 	 * @param {Function} shapeFunc function of shape (expect to accept one argument and return a function a number)
 	 * @param {Number} funcStart startPoint for the range shape
 	 * @param {Number} funcEnd endPoint for the range shape
+	 * @param {Number} strokeWidth width of the stock of range shape
 	 * @param {Number} SVGWidth Width of the svg element
 	 * @param {Number} SVGHeight Height of the svg element
 	 */
 
-	constructor({holderID, shapeFunc= Math.sin,funcStart=0, funcEnd=6.28, percentageValue=0} = {}){
+	constructor({holderID, shapeFunc= Math.sin,funcStart=0, funcEnd=6.28, strokeWidth=10, percentageValue=0} = {}){
 		/**
 		 * constructor of RangeRider
 		 * @argument {String} holderID the ID of HTML element holder of range selector
 		 * @argument {Function} shapeFunc function of shape (expect to accept one argument and return a function a number)
 		 * @argument {Number} funcStart startPoint for the range shape
 		 * @argument {Number} funcEnd endPoint for the range shape
+		 * @argument {Number} strokeWidth width of the stock of range shape
 		 * @returns {null}
 		 */
 		this.segments = 1000;
@@ -28,7 +30,7 @@ class RangeRider{
 		this.svgHolder = null
 		this.pathGroup = null;
 
-		this.strokeWidth = 15
+		this.strokeWidth = strokeWidth
 		this.SVGWidth = this.holderElement.clientWidth;
 		this.SVGHeight = this.holderElement.clientHeight;
 
@@ -185,6 +187,7 @@ window.onload = function() {
 		shapeFunc: (x)=>{
 			return Math.sin(x)
 		},
+		strokeWidth: 50,
 		holderID:"funcInput",
 		funcStart: 0,
 		funcEnd: Math.PI*2
