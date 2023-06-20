@@ -1,30 +1,33 @@
 
 
-class SinRangeInput{
+class RangeRider{
 	/**
-	 * Base class for sinus range input
+	 * Base class for RangeRider
 	 * @param {String} holderID the ID of HTML element holder of range selector
-	 * @param {Number} sinRepeatsCount the number of sin (0-2pi) repeated (float 0-infinity) times
-	 * @param {Number} sinSVGWidth Width of the svg element
-	 * @param {Number} sinSVGHeight Height of the svg element
+	 * @param {Number} funcStart startPoint for the range shape
+	 * @param {Number} funcEnd endPoint for the range shape
+	 * @param {Number} SVGWidth Width of the svg element
+	 * @param {Number} SVGHeight Height of the svg element
 	 */
 
-	constructor({holderID, sinRepeatsCount=1, percentageValue=0} = {}){
+	constructor({holderID, funcStart=0, funcEnd=6.28, percentageValue=0} = {}){
 		/**
-		 * constructor of sinRangeInput
+		 * constructor of RangeRider
 		 * @argument {String} holderID the ID of HTML element holder of range selector
-		 * @argument {Number} sinRepeatsCount the number of sin (0-2pi) repeated (float 0-infinity) times
+		 * @argument {Number} funcStart startPoint for the range shape
+		 * @argument {Number} funcEnd endPoint for the range shape
 		 * @returns {null}
 		 */
 		this.segments = 1000;
-		this.sinRepeatsCount = sinRepeatsCount
+		this.funcStart = funcStart
+		this.funcEnd = funcEnd
 		this.holderElement = document.getElementById(holderID);
 		this.svgHolder = null
-		this.sinGroup = null;
+		this.pathGroup = null;
 
 		this.strokeWidth = 15
-		this.sinSVGWidth = this.holderElement.clientWidth;
-		this.sinSVGHeight = this.holderElement.clientHeight;
+		this.SVGWidth = this.holderElement.clientWidth;
+		this.SVGHeight = this.holderElement.clientHeight;
 
 		this.percentageValue = percentageValue
 		this.amplitudeMultiplier = this.getAmplitudeMultiplier()
@@ -32,51 +35,51 @@ class SinRangeInput{
 		this.clickHold = false;
 	}
 
-	getSinYAxis(offsetX){
-		return this.amplitudeMultiplier * Math.sin(offsetX) + this.sinSVGHeight /2
+	getFuncYAxis(offsetX){
+		return this.amplitudeMultiplier * Math.tan(offsetX) + this.SVGHeight /2
 	}
 
 	getAmplitudeMultiplier(){
 		/**
-		 * get amplitude multiplier of the sinWave based on the holderSize
+		 * get amplitude multiplier of the DrawFunc based on the holderSize
 		 */
-		return (this.sinSVGHeight - this.strokeWidth) / 2
+		return (this.SVGHeight - this.strokeWidth) / 2
 	}
 
-	getRelativeSinOffset(step){
-		return step / this.segments * 2 * Math.PI * this.sinRepeatsCount
+	getRelativeFuncOffset(step){
+		return step / this.segments * (this.funcEnd - this.funcStart)
 	}
 
 	getScreenToCartesianRatio(step){
-		return this.sinSVGWidth / ( 2 * Math.PI * this.sinRepeatsCount)
+		return this.SVGWidth / (this.funcEnd - this.funcStart)
 	}
 
 	PercentageOffsetX(percentage){
 		return this.svgHolder.clientWidth * percentage / 100
 	}
 
-	PercentageSinX(percentage){
+	PercentageFuncX(percentage){
 		let ratio = percentage/100;
 		let step = Math.floor(this.segments * ratio);
-		return this.getRelativeSinOffset(step);
+		return this.getRelativeFuncOffset(step);
 	}
 
-	PercentageSinY(percentage){
-		return this.getSinYAxis(this.PercentageSinX(percentage));
+	PercentageFuncY(percentage){
+		return this.getFuncYAxis(this.PercentageFuncX(percentage));
 	}
 
-	describeSinPath({percentage=100}={}){
+	describeFuncPath({percentage=100}={}){
 		let path = []
 		let currentOffsetX = 0;
 		let NextOffsetX = 0;
 		let xAxisRatio = this.getScreenToCartesianRatio();
 
 		for (let i=0; i<this.segments; i++){
-			currentOffsetX = this.getRelativeSinOffset(i);
-			NextOffsetX = this.getRelativeSinOffset(i+1);
+			currentOffsetX = this.getRelativeFuncOffset(i);
+			NextOffsetX = this.getRelativeFuncOffset(i+1);
 			path.push(
-				'M', xAxisRatio * currentOffsetX + this.strokeWidth/2, this.getSinYAxis(currentOffsetX),
-				'L', xAxisRatio * NextOffsetX + this.strokeWidth/2, this.getSinYAxis(NextOffsetX)
+				'M', xAxisRatio * currentOffsetX + this.strokeWidth/2, this.getFuncYAxis(currentOffsetX),
+				'L', xAxisRatio * NextOffsetX + this.strokeWidth/2, this.getFuncYAxis(NextOffsetX)
 			)
 		}
 
@@ -87,23 +90,23 @@ class SinRangeInput{
 		this.svgHolder = this.holderElement
 		const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 		const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-		this.sinGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+		this.pathGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
 		svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        svg.setAttribute('width', this.sinSVGWidth + this.strokeWidth  + "px");
-        svg.setAttribute('height', this.sinSVGHeight + this.strokeWidth  + "px");
-		path.setAttribute('d', this.describeSinPath());
+        svg.setAttribute('width', this.SVGWidth + this.strokeWidth  + "px");
+        svg.setAttribute('height', this.SVGHeight + this.strokeWidth  + "px");
+		path.setAttribute('d', this.describeFuncPath());
 		path.style.stroke = "#000000";
 		path.style.strokeWidth = this.strokeWidth;
-		this.sinGroup.appendChild(path);
+		this.pathGroup.appendChild(path);
 		this.svgHolder.replaceChildren(svg);
-		svg.appendChild(this.sinGroup);
+		svg.appendChild(this.pathGroup);
 		this.svg = svg;
 		this.svgHolder.style.cursor = "pointer";
 		this.drawHandler()
 
-		this.handle.setAttribute('cx', this.PercentageSinX(0) + this.strokeWidth/2);
-        this.handle.setAttribute('cy', this.PercentageSinY(0));
+		this.handle.setAttribute('cx', this.PercentageFuncX(0) + this.strokeWidth/2);
+        this.handle.setAttribute('cy', this.PercentageFuncY(0));
 
 		this.svgHolder.addEventListener("mousedown", this.clickDown.bind(this), false);
 		this.svgHolder.addEventListener("touchstart", this.clickDown.bind(this), false);
@@ -133,19 +136,21 @@ class SinRangeInput{
 		let coords = this.getRatioCoords (event)
 		this.percentageValue = this.boundValue(coords[0] * 100, 0 ,100)
 		this.handle.setAttribute('cx', this.PercentageOffsetX(this.percentageValue) + this.strokeWidth/2);
-        this.handle.setAttribute('cy', this.PercentageSinY(this.percentageValue));
+        this.handle.setAttribute('cy', this.PercentageFuncY(this.percentageValue));
 	}
 
 	drawHandler(){
 		this.handle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         this.handle.setAttribute('class', 'sliderHandle');
         this.handle.setAttribute('cx', this.PercentageOffsetX(this.percentageValue));
-        this.handle.setAttribute('cy', this.PercentageSinY(this.percentageValue));
+        this.handle.setAttribute('cy', this.PercentageFuncY(this.percentageValue));
         this.handle.setAttribute('r', this.strokeWidth/2);
+
         this.handle.style.stroke = "#ff0000";
         this.handle.style.strokeWidth = 1;
         this.handle.style.fill = "#ff0000";
-        this.sinGroup.appendChild(this.handle);
+
+        this.pathGroup.appendChild(this.handle);
 	}
 
 	getRatioCoords(event){
@@ -174,11 +179,12 @@ class SinRangeInput{
 
 
 window.onload = function() {
-	si = new SinRangeInput({
-		holderID:"sinus_input",
-		sinRepeatsCount: 1
+	fi = new RangeRider({
+		holderID:"funcInput",
+		funcStart: 1,
+		funcEnd: 10
 	});
-	si.generate()
+	fi.generate()
 }
 
 
