@@ -7,25 +7,28 @@ class RangeRider{
 	 * @param {Function} shapeFunc function of shape (expect to accept one argument and return a function a number)
 	 * @param {Number} funcStart startPoint for the range shape
 	 * @param {Number} funcEnd endPoint for the range shape
-	 * @param {Number} strokeWidth width of the stock of range shape
+	 * @param {Number} strokeWidth width of the stroke of range shape
 	 * @param {Number} SVGWidth Width of the svg element
 	 * @param {Number} SVGHeight Height of the svg element
 	 */
 
-	constructor({holderID, shapeFunc= Math.sin,funcStart=0, funcEnd=6.28, strokeWidth=10, percentageValue=0} = {}){
+	constructor({holderID, shapeFunc= Math.sin,funcStart=0, funcEnd=6.28, strokeWidth=10, strokeColor="#000000", percentageValue=0} = {}){
 		/**
 		 * constructor of RangeRider
 		 * @argument {String} holderID the ID of HTML element holder of range selector
 		 * @argument {Function} shapeFunc function of shape (expect to accept one argument and return a function a number)
 		 * @argument {Number} funcStart startPoint for the range shape
 		 * @argument {Number} funcEnd endPoint for the range shape
-		 * @argument {Number} strokeWidth width of the stock of range shape
+		 * @argument {Number} strokeWidth width of the stroke of range shape
+		 * @argument {String} strokeColor color of the stroke (default black "#000000")
 		 * @returns {null}
 		 */
 		this.segments = 1000;
 		this.shapeFunc = shapeFunc
 		this.funcStart = funcStart
 		this.funcEnd = funcEnd
+		this.strokeColor = strokeColor
+
 		this.holderElement = document.getElementById(holderID);
 		this.svgHolder = null
 		this.pathGroup = null;
@@ -101,7 +104,7 @@ class RangeRider{
         svg.setAttribute('width', this.SVGWidth + this.strokeWidth  + "px");
         svg.setAttribute('height', this.SVGHeight + this.strokeWidth  + "px");
 		path.setAttribute('d', this.describeFuncPath());
-		path.style.stroke = "#000000";
+		path.style.stroke = this.strokeColor;
 		path.style.strokeWidth = this.strokeWidth;
 		this.pathGroup.appendChild(path);
 		this.svgHolder.replaceChildren(svg);
@@ -190,7 +193,8 @@ window.onload = function() {
 		strokeWidth: 50,
 		holderID:"funcInput",
 		funcStart: 0,
-		funcEnd: Math.PI*2
+		funcEnd: Math.PI*2,
+		strokeColor: "#551111"
 	});
 	fi.generate()
 }
