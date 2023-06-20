@@ -4,21 +4,24 @@ class RangeRider{
 	/**
 	 * Base class for RangeRider
 	 * @param {String} holderID the ID of HTML element holder of range selector
+	 * @param {Function} shapeFunc function of shape (expect to accept one argument and return a function a number)
 	 * @param {Number} funcStart startPoint for the range shape
 	 * @param {Number} funcEnd endPoint for the range shape
 	 * @param {Number} SVGWidth Width of the svg element
 	 * @param {Number} SVGHeight Height of the svg element
 	 */
 
-	constructor({holderID, funcStart=0, funcEnd=6.28, percentageValue=0} = {}){
+	constructor({holderID, shapeFunc= Math.sin,funcStart=0, funcEnd=6.28, percentageValue=0} = {}){
 		/**
 		 * constructor of RangeRider
 		 * @argument {String} holderID the ID of HTML element holder of range selector
+		 * @argument {Function} shapeFunc function of shape (expect to accept one argument and return a function a number)
 		 * @argument {Number} funcStart startPoint for the range shape
 		 * @argument {Number} funcEnd endPoint for the range shape
 		 * @returns {null}
 		 */
 		this.segments = 1000;
+		this.shapeFunc = shapeFunc
 		this.funcStart = funcStart
 		this.funcEnd = funcEnd
 		this.holderElement = document.getElementById(holderID);
@@ -36,7 +39,7 @@ class RangeRider{
 	}
 
 	getFuncYAxis(offsetX){
-		return this.amplitudeMultiplier * Math.tan(offsetX) + this.SVGHeight /2
+		return this.svgHolder.clientHeight - (this.amplitudeMultiplier * this.shapeFunc(offsetX) + this.SVGHeight /2)
 	}
 
 	getAmplitudeMultiplier(){
@@ -164,7 +167,6 @@ class RangeRider{
             clientX = event.clientX;
             clientY = event.clientY;
         }
-		let BoundingWrapper = this.holderElement.getBoundingClientRect()
 		let boundingSVGHolder = this.svgHolder.getBoundingClientRect();
 		x = clientX - boundingSVGHolder.left;
         y = clientY - boundingSVGHolder.top;
@@ -180,9 +182,12 @@ class RangeRider{
 
 window.onload = function() {
 	fi = new RangeRider({
+		shapeFunc: (x)=>{
+			return Math.sin(x)
+		},
 		holderID:"funcInput",
-		funcStart: 1,
-		funcEnd: 10
+		funcStart: 0,
+		funcEnd: Math.PI*2
 	});
 	fi.generate()
 }
