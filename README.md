@@ -2,8 +2,7 @@
 
 Range Input in Mathematical functions shape.
 
-
-# Definitions
+## Definitions
 
 * **CartesianX**: Cartesian position in X Axis;
 * **CartesianY** Cartesian position in Y Axis;
