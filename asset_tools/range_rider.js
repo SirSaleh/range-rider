@@ -43,8 +43,8 @@ class RangeRider{
 		this.clickHold = false;
 	}
 
-	getFuncYAxis(offsetX){
-		return this.svgHolder.clientHeight - (this.amplitudeMultiplier * this.shapeFunc(offsetX) + this.SVGHeight /2)
+	clientYFromCartX(CartesianX){
+		return this.svgHolder.clientHeight - (this.amplitudeMultiplier * this.shapeFunc(CartesianX) + this.SVGHeight /2)
 	}
 
 	getAmplitudeMultiplier(){
@@ -54,40 +54,40 @@ class RangeRider{
 		return (this.SVGHeight - this.strokeWidth) / 2
 	}
 
-	getRelativeFuncOffset(step){
+	stepToClientX(step){
 		return step / this.segments * (this.funcEnd - this.funcStart)
 	}
 
-	getScreenToCartesianRatio(step){
+	clientToCartRatio(step){
 		return this.SVGWidth / (this.funcEnd - this.funcStart)
 	}
 
-	PercentageOffsetX(percentage){
+	PercentageToClientX(percentage){
 		return this.svgHolder.clientWidth * percentage / 100
 	}
 
-	PercentageFuncX(percentage){
+	PercentageToCartX(percentage){
 		let ratio = percentage/100;
 		let step = Math.floor(this.segments * ratio);
-		return this.getRelativeFuncOffset(step);
+		return this.stepToClientX(step);
 	}
 
-	PercentageFuncY(percentage){
-		return this.getFuncYAxis(this.PercentageFuncX(percentage));
+	PercentageToCartY(percentage){
+		return this.clientYFromCartX(this.PercentageToCartX(percentage));
 	}
 
 	describeFuncPath({percentage=100}={}){
 		let path = []
 		let currentOffsetX = 0;
 		let NextOffsetX = 0;
-		let xAxisRatio = this.getScreenToCartesianRatio();
+		let xAxisRatio = this.clientToCartRatio();
 
 		for (let i=0; i<this.segments; i++){
-			currentOffsetX = this.getRelativeFuncOffset(i);
-			NextOffsetX = this.getRelativeFuncOffset(i+1);
+			currentOffsetX = this.stepToClientX(i);
+			NextOffsetX = this.stepToClientX(i+1);
 			path.push(
-				'M', xAxisRatio * currentOffsetX + this.strokeWidth/2, this.getFuncYAxis(currentOffsetX),
-				'L', xAxisRatio * NextOffsetX + this.strokeWidth/2, this.getFuncYAxis(NextOffsetX)
+				'M', xAxisRatio * currentOffsetX + this.strokeWidth/2, this.clientYFromCartX(currentOffsetX),
+				'L', xAxisRatio * NextOffsetX + this.strokeWidth/2, this.clientYFromCartX(NextOffsetX)
 			)
 		}
 
@@ -113,8 +113,8 @@ class RangeRider{
 		this.svgHolder.style.cursor = "pointer";
 		this.drawHandler()
 
-		this.handle.setAttribute('cx', this.PercentageFuncX(0) + this.strokeWidth/2);
-        this.handle.setAttribute('cy', this.PercentageFuncY(0));
+		this.handle.setAttribute('cx', this.PercentageToCartX(0) + this.strokeWidth/2);
+        this.handle.setAttribute('cy', this.PercentageToCartY(0));
 
 		this.svgHolder.addEventListener("mousedown", this.clickDown.bind(this), false);
 		this.svgHolder.addEventListener("touchstart", this.clickDown.bind(this), false);
@@ -143,15 +143,15 @@ class RangeRider{
 		if (!this.clickHold) return;
 		let coords = this.getRatioCoords (event)
 		this.percentageValue = this.boundValue(coords[0] * 100, 0 ,100)
-		this.handle.setAttribute('cx', this.PercentageOffsetX(this.percentageValue) + this.strokeWidth/2);
-        this.handle.setAttribute('cy', this.PercentageFuncY(this.percentageValue));
+		this.handle.setAttribute('cx', this.PercentageToClientX(this.percentageValue) + this.strokeWidth/2);
+        this.handle.setAttribute('cy', this.PercentageToCartY(this.percentageValue));
 	}
 
 	drawHandler(){
 		this.handle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         this.handle.setAttribute('class', 'sliderHandle');
-        this.handle.setAttribute('cx', this.PercentageOffsetX(this.percentageValue));
-        this.handle.setAttribute('cy', this.PercentageFuncY(this.percentageValue));
+        this.handle.setAttribute('cx', this.PercentageToClientX(this.percentageValue));
+        this.handle.setAttribute('cy', this.PercentageToCartY(this.percentageValue));
         this.handle.setAttribute('r', this.strokeWidth/2);
 
         this.handle.style.stroke = "#ff0000";
@@ -194,7 +194,8 @@ window.onload = function() {
 		holderID:"funcInput",
 		funcStart: 0,
 		funcEnd: Math.PI*2,
-		strokeColor: "#551111"
+		strokeColor: "#551111",
+		percentageValue: 50,
 	});
 	fi.generate()
 }
