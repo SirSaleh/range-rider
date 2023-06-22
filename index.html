@@ -5,5 +5,21 @@
 	<body>
 		<div style="width: 400px; height: 100px;" id="funcInput"></div>
 		<script src="./asset_tools/range_rider.js"></script>
+		<script>
+			window.onload = function() {
+				fi = new RangeRider({
+					shapeFunc: (x)=>{
+						return Math.sin(x)
+					},
+					strokeWidth: 50,
+					holderID:"funcInput",
+					funcStart: 0,
+					funcEnd: Math.PI*10,
+					strokeColor: "#551111",
+					percentageValue: 50,
+				});
+				fi.generate()
+			}
+		</script>
 	</body>
 </html>

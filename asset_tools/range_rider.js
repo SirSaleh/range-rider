@@ -184,21 +184,3 @@ class RangeRider{
 	}
 }
 
-
-window.onload = function() {
-	fi = new RangeRider({
-		shapeFunc: (x)=>{
-			return Math.sin(x)
-		},
-		strokeWidth: 50,
-		holderID:"funcInput",
-		funcStart: 0,
-		funcEnd: Math.PI*2,
-		strokeColor: "#551111",
-		percentageValue: 50,
-	});
-	fi.generate()
-}
-
-
-
