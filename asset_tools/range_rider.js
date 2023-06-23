@@ -12,9 +12,12 @@ class RangeRider{
 	 * @param {String} progressStrokeColor color of the progress path
 	 * @param {Number} SVGWidth Width of the svg element
 	 * @param {Number} SVGHeight Height of the svg element
+	 * @param {Function} sliderChangeCallback callback function to call when the value changes (accepts newPercentageValue as argument)
 	 */
 
-	constructor({holderID, shapeFunc= Math.sin,funcStart=0, funcEnd=6.28, strokeWidth=10, progressStrokeWidth= 10, strokeColor="#000000", progressStrokeColor="#ff0000", percentageValue=0} = {}){
+	constructor({holderID, shapeFunc= Math.sin,funcStart=0, funcEnd=6.28, strokeWidth=10, progressStrokeWidth= 10,
+				strokeColor="#000000", progressStrokeColor="#ff0000",
+				percentageValue=0, sliderChangeCallback=(newPercentageValue)=>{}} = {}){
 		/**
 		 * constructor of RangeRider
 		 * @argument {String} holderID the ID of HTML element holder of range selector
@@ -25,6 +28,7 @@ class RangeRider{
 		 * @argument {String} strokeColor color of the stroke (default black "#000000")
 		 * @argument {Number} progressStrokeWidth width of the progress path
 		 * @argument {String} progressStrokeColor color of the progress path
+		 * @argument {Function} sliderChangeCallback callback function to call when the value changes (accepts newPercentageValue as argument)
 		 * @returns {null}
 		 */
 		this.segments = 1000;
@@ -34,6 +38,7 @@ class RangeRider{
 		this.strokeColor = strokeColor
 		this.progressStrokeWidth = progressStrokeWidth
 		this.progressStrokeColor = progressStrokeColor
+		this.sliderChangeCallback = sliderChangeCallback
 
 		this.holderElement = document.getElementById(holderID);
 		this.svgHolder = null
@@ -152,6 +157,7 @@ class RangeRider{
 		if (!this.clickHold) return;
 		let coords = this.getRatioCoords (event)
 		this.percentageValue = this.boundValue(coords[0] * 100, 0 ,100)
+		this.sliderChangeCallback(this.percentageValue)
 		this.handle.setAttribute('cx', this.PercentageToClientX(this.percentageValue) + this.strokeWidth/2);
         this.handle.setAttribute('cy', this.PercentageToCartY(this.percentageValue));
 		this.progressPath.setAttribute('d', this.describeFuncPath({percentage: this.percentageValue}));
