@@ -8,11 +8,13 @@ class RangeRider{
 	 * @param {Number} funcStart startPoint for the range shape
 	 * @param {Number} funcEnd endPoint for the range shape
 	 * @param {Number} strokeWidth width of the stroke of range shape
+	 * @param {Number} progressStrokeWidth width of the progress of range shape
+	 * @param {String} progressStrokeColor color of the progress path
 	 * @param {Number} SVGWidth Width of the svg element
 	 * @param {Number} SVGHeight Height of the svg element
 	 */
 
-	constructor({holderID, shapeFunc= Math.sin,funcStart=0, funcEnd=6.28, strokeWidth=10, strokeColor="#000000", percentageValue=0} = {}){
+	constructor({holderID, shapeFunc= Math.sin,funcStart=0, funcEnd=6.28, strokeWidth=10, progressStrokeWidth= 10, strokeColor="#000000", progressStrokeColor="#ff0000", percentageValue=0} = {}){
 		/**
 		 * constructor of RangeRider
 		 * @argument {String} holderID the ID of HTML element holder of range selector
@@ -21,6 +23,8 @@ class RangeRider{
 		 * @argument {Number} funcEnd endPoint for the range shape
 		 * @argument {Number} strokeWidth width of the stroke of range shape
 		 * @argument {String} strokeColor color of the stroke (default black "#000000")
+		 * @argument {Number} progressStrokeWidth width of the progress path
+		 * @argument {String} progressStrokeColor color of the progress path
 		 * @returns {null}
 		 */
 		this.segments = 1000;
@@ -28,6 +32,8 @@ class RangeRider{
 		this.funcStart = funcStart
 		this.funcEnd = funcEnd
 		this.strokeColor = strokeColor
+		this.progressStrokeWidth = progressStrokeWidth
+		this.progressStrokeColor = progressStrokeColor
 
 		this.holderElement = document.getElementById(holderID);
 		this.svgHolder = null
@@ -106,8 +112,9 @@ class RangeRider{
         svg.setAttribute('width', this.SVGWidth + this.strokeWidth  + "px");
         svg.setAttribute('height', this.SVGHeight + this.strokeWidth  + "px");
 		path.setAttribute('d', this.describeFuncPath());
-		this.progressPath.setAttribute('d', this.describeFuncPath({percentage: 50}));
-		this.progressPath.style.stroke = "#ff0000";
+		this.progressPath.setAttribute('d', this.describeFuncPath({percentage: this.percentageValue}));
+		this.progressPath.style.stroke =  this.progressStrokeColor;
+		this.progressPath.style.strokeWidth = this.progressStrokeWidth;
 		path.style.stroke = this.strokeColor;
 		path.style.strokeWidth = this.strokeWidth;
 		this.pathGroup.appendChild(path);
@@ -117,9 +124,6 @@ class RangeRider{
 		this.svg = svg;
 		this.svgHolder.style.cursor = "pointer";
 		this.drawHandler()
-
-		this.handle.setAttribute('cx', this.PercentageToCartX(0) + this.strokeWidth/2);
-        this.handle.setAttribute('cy', this.PercentageToCartY(0));
 
 		this.svgHolder.addEventListener("mousedown", this.clickDown.bind(this), false);
 		this.svgHolder.addEventListener("touchstart", this.clickDown.bind(this), false);
@@ -156,8 +160,6 @@ class RangeRider{
 	drawHandler(){
 		this.handle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         this.handle.setAttribute('class', 'sliderHandle');
-        this.handle.setAttribute('cx', this.PercentageToClientX(this.percentageValue));
-        this.handle.setAttribute('cy', this.PercentageToCartY(this.percentageValue));
         this.handle.setAttribute('r', this.strokeWidth/2);
 
         this.handle.style.stroke = "#ff0000";
@@ -165,6 +167,9 @@ class RangeRider{
         this.handle.style.fill = "#ff0000";
 
         this.pathGroup.appendChild(this.handle);
+
+		this.handle.setAttribute('cx', this.PercentageToClientX(this.percentageValue) + this.strokeWidth/2);
+        this.handle.setAttribute('cy', this.PercentageToCartY(this.percentageValue));
 	}
 
 	getRatioCoords(event){
