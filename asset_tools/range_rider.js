@@ -99,15 +99,19 @@ class RangeRider{
 		this.svgHolder = this.holderElement
 		const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 		const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+		this.progressPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 		this.pathGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
 		svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
         svg.setAttribute('width', this.SVGWidth + this.strokeWidth  + "px");
         svg.setAttribute('height', this.SVGHeight + this.strokeWidth  + "px");
 		path.setAttribute('d', this.describeFuncPath());
+		this.progressPath.setAttribute('d', this.describeFuncPath({percentage: 50}));
+		this.progressPath.style.stroke = "#ff0000";
 		path.style.stroke = this.strokeColor;
 		path.style.strokeWidth = this.strokeWidth;
 		this.pathGroup.appendChild(path);
+		this.pathGroup.appendChild(this.progressPath);
 		this.svgHolder.replaceChildren(svg);
 		svg.appendChild(this.pathGroup);
 		this.svg = svg;
@@ -146,6 +150,7 @@ class RangeRider{
 		this.percentageValue = this.boundValue(coords[0] * 100, 0 ,100)
 		this.handle.setAttribute('cx', this.PercentageToClientX(this.percentageValue) + this.strokeWidth/2);
         this.handle.setAttribute('cy', this.PercentageToCartY(this.percentageValue));
+		this.progressPath.setAttribute('d', this.describeFuncPath({percentage: this.percentageValue}));
 	}
 
 	drawHandler(){
