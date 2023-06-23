@@ -78,11 +78,12 @@ class RangeRider{
 
 	describeFuncPath({percentage=100}={}){
 		let path = []
+		let ratio = percentage / 100
 		let currentOffsetX = 0;
 		let NextOffsetX = 0;
 		let xAxisRatio = this.clientToCartRatio();
 
-		for (let i=0; i<this.segments; i++){
+		for (let i=0; i<ratio * this.segments; i++){
 			currentOffsetX = this.stepToClientX(i);
 			NextOffsetX = this.stepToClientX(i+1);
 			path.push(
