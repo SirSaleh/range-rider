@@ -7,7 +7,7 @@
 		<script src="./asset_tools/range_rider.js"></script>
 		<script>
 			window.onload = function() {
-				fi = new RangeRider({
+				const rangeRiderSlider = new RangeRider({
 					shapeFunc: (x)=>{
 						return Math.sin(x)
 					},
@@ -18,9 +18,13 @@
 					strokeColor: "#000000",
 					percentageValue: 50,
 					progressStrokeWidth: 1,
-					progressStrokeColor: "#ff5555"
+					progressStrokeColor: "#ff5555",
+					sliderChangeCallback: function(newPercentageValue){
+						// do whatever you want to do with the slider value
+						console.log(newPercentageValue)
+					}
 				});
-				fi.generate()
+				rangeRiderSlider.generate()
 			}
 		</script>
 	</body>
