@@ -62,10 +62,10 @@ class RangeRider{
 		/**
 		 * get amplitude multiplier of the DrawFunc based on the holderSize
 		 */
-		return (this.SVGHeight - this.strokeWidth) / 2
+		return 0.1 * (this.SVGHeight - this.strokeWidth) / 2
 	}
 
-	stepToClientX(step){
+	stepToCartX(step){
 		return step / this.segments * (this.funcEnd - this.funcStart)
 	}
 
@@ -80,10 +80,10 @@ class RangeRider{
 	PercentageToCartX(percentage){
 		let ratio = percentage/100;
 		let step = Math.floor(this.segments * ratio);
-		return this.stepToClientX(step);
+		return this.stepToCartX(step);
 	}
 
-	PercentageToCartY(percentage){
+	PercentageToClientY(percentage){
 		return this.clientYFromCartX(this.PercentageToCartX(percentage));
 	}
 
@@ -95,8 +95,8 @@ class RangeRider{
 		let xAxisRatio = this.clientToCartRatio();
 
 		for (let i=0; i<ratio * this.segments; i++){
-			currentOffsetX = this.stepToClientX(i);
-			NextOffsetX = this.stepToClientX(i+1);
+			currentOffsetX = this.stepToCartX(i);
+			NextOffsetX = this.stepToCartX(i+1);
 			path.push(
 				'M', xAxisRatio * currentOffsetX + this.strokeWidth/2, this.clientYFromCartX(currentOffsetX),
 				'L', xAxisRatio * NextOffsetX + this.strokeWidth/2, this.clientYFromCartX(NextOffsetX)
@@ -159,7 +159,7 @@ class RangeRider{
 		this.percentageValue = this.boundValue(coords[0] * 100, 0 ,100)
 		this.sliderChangeCallback(this.percentageValue)
 		this.handle.setAttribute('cx', this.PercentageToClientX(this.percentageValue) + this.strokeWidth/2);
-        this.handle.setAttribute('cy', this.PercentageToCartY(this.percentageValue));
+        this.handle.setAttribute('cy', this.PercentageToClientY(this.percentageValue));
 		this.progressPath.setAttribute('d', this.describeFuncPath({percentage: this.percentageValue}));
 	}
 
@@ -175,7 +175,7 @@ class RangeRider{
         this.pathGroup.appendChild(this.handle);
 
 		this.handle.setAttribute('cx', this.PercentageToClientX(this.percentageValue) + this.strokeWidth/2);
-        this.handle.setAttribute('cy', this.PercentageToCartY(this.percentageValue));
+        this.handle.setAttribute('cy', this.PercentageToClientY(this.percentageValue));
 	}
 
 	getRatioCoords(event){
