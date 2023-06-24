@@ -62,7 +62,7 @@ class RangeRider{
 		/**
 		 * get amplitude multiplier of the DrawFunc based on the holderSize
 		 */
-		return this.SVGHeight - this.strokeWidth / 2
+		return (this.SVGHeight - this.strokeWidth) / 2
 	}
 
 	stepToCartX(step){
