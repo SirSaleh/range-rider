@@ -2,6 +2,10 @@
 
 Range Input in Mathematical functions shape.
 
+Click to see [live demo here](https://sirsaleh.github.io/range-rider-demo/)
+
+![Demo for RangeRider range input](/media/screen_demo.png "Demo")
+
 ## Usage
 
 You can use it easily to create a range slide inside a container. Width and Height of the container automatically determines the size of the slider
