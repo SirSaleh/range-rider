@@ -180,7 +180,7 @@ class RangeRider{
 
 	getRatioCoords(event){
 		let x, y, clientX, clientY;
-        if (window.TouchEvent && e instanceof TouchEvent){
+        if (window.TouchEvent && event instanceof TouchEvent){
 			// for touch devices
             clientX = event.touches[0].pageX - window.scrollX;
             clientY = event.touches[0].pageY - window.scrollY;
