@@ -114,8 +114,8 @@ class RangeRider{
 		this.pathGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
 		svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        svg.setAttribute('width', this.SVGWidth + this.strokeWidth  + "px");
-        svg.setAttribute('height', this.SVGHeight + this.strokeWidth  + "px");
+		svg.setAttribute('width', this.SVGWidth + this.strokeWidth  + "px");
+		svg.setAttribute('height', this.SVGHeight + this.strokeWidth  + "px");
 		path.setAttribute('d', this.describeFuncPath());
 		this.progressPath.setAttribute('d', this.describeFuncPath({percentage: this.percentageValue}));
 		this.progressPath.style.stroke =  this.progressStrokeColor;
@@ -134,7 +134,7 @@ class RangeRider{
 		this.svgHolder.addEventListener("mousedown", this.clickDown.bind(this), false);
 		this.svgHolder.addEventListener("touchstart", this.clickDown.bind(this), false);
 		this.svgHolder.addEventListener('mousemove', this.clickMove.bind(this), false);
-        this.svgHolder.addEventListener('touchmove', this.clickMove.bind(this), false);
+		this.svgHolder.addEventListener('touchmove', this.clickMove.bind(this), false);
 
 		window.addEventListener("mouseup", this.clickUp.bind(this), false);
 		window.addEventListener('touchend', this.clickUp.bind(this), false);
@@ -168,40 +168,40 @@ class RangeRider{
 		this.percentageValue = this.boundValue(coords[0] * 100, 0 ,100)
 		this.sliderChangeCallback(this.percentageValue)
 		this.handle.setAttribute('cx', this.PercentageToClientX(this.percentageValue) + this.strokeWidth/2);
-        this.handle.setAttribute('cy', this.PercentageToClientY(this.percentageValue));
+		this.handle.setAttribute('cy', this.PercentageToClientY(this.percentageValue));
 		this.progressPath.setAttribute('d', this.describeFuncPath({percentage: this.percentageValue}));
 	}
 
 	drawHandler(){
 		this.handle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        this.handle.setAttribute('class', 'sliderHandle');
-        this.handle.setAttribute('r', this.strokeWidth/2);
+		this.handle.setAttribute('class', 'sliderHandle');
+		this.handle.setAttribute('r', this.strokeWidth/2);
 
-        this.handle.style.stroke = "#ff0000";
-        this.handle.style.strokeWidth = 1;
-        this.handle.style.fill = "#ff0000";
+		this.handle.style.stroke = "#ff0000";
+		this.handle.style.strokeWidth = 1;
+		this.handle.style.fill = "#ff0000";
 
-        this.pathGroup.appendChild(this.handle);
+		this.pathGroup.appendChild(this.handle);
 
 		this.handle.setAttribute('cx', this.PercentageToClientX(this.percentageValue) + this.strokeWidth/2);
-        this.handle.setAttribute('cy', this.PercentageToClientY(this.percentageValue));
+		this.handle.setAttribute('cy', this.PercentageToClientY(this.percentageValue));
 	}
 
 	getRatioCoords(event){
 		let x, y, clientX, clientY;
 		event.preventDefault();
-        if (window.TouchEvent && event instanceof TouchEvent){
+		if (window.TouchEvent && event instanceof TouchEvent){
 			// for touch devices
-            clientX = event.touches[0].pageX - window.scrollX;
-            clientY = event.touches[0].pageY - window.scrollY;
-        }else {
+			clientX = event.touches[0].pageX - window.scrollX;
+			clientY = event.touches[0].pageY - window.scrollY;
+		}else {
 			// for mouse or touchpad devices
-            clientX = event.clientX;
-            clientY = event.clientY;
-        }
+			clientX = event.clientX;
+			clientY = event.clientY;
+		}
 		let boundingSVGHolder = this.svgHolder.getBoundingClientRect();
 		x = clientX - boundingSVGHolder.left;
-        y = clientY - boundingSVGHolder.top;
+		y = clientY - boundingSVGHolder.top;
 
 		return [x/boundingSVGHolder.width, y/boundingSVGHolder.height];
 	}
