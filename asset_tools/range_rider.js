@@ -130,7 +130,7 @@ class RangeRider{
 		this.svgHolder.style.cursor = "pointer";
 		this.drawHandler()
 
-		this.svgHolder.addEventListener("click", this.clickDone.bind(this), false);
+		this.svgHolder.addEventListener("click", this.singleClick.bind(this), false);
 		this.svgHolder.addEventListener("mousedown", this.clickDown.bind(this), false);
 		this.svgHolder.addEventListener("touchstart", this.clickDown.bind(this), false);
 		this.svgHolder.addEventListener('mousemove', this.clickMove.bind(this), false);
@@ -140,7 +140,7 @@ class RangeRider{
 		window.addEventListener('touchend', this.clickUp.bind(this), false);
 	}
 
-	clickDone(event){
+	singleClick(event){
 		this.clickHold = true;
 
 		this.clickMove(event);
